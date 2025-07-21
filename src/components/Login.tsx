@@ -40,7 +40,7 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="admin@company.com"
+              placeholder="FHM"
               required
             />
           </div>
@@ -55,7 +55,7 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="password"
+              placeholder="TechnicalSEO!"
               required
             />
           </div>
@@ -81,8 +81,8 @@ const Login = () => {
 
         <div className="mt-6 p-4 bg-gray-50 rounded-md">
           <p className="text-sm text-gray-600 font-medium mb-2">Demo Credentials:</p>
-          <p className="text-xs text-gray-500">Email: admin@company.com</p>
-          <p className="text-xs text-gray-500">Password: password</p>
+          <p className="text-xs text-gray-500">Username: FHM</p>
+          <p className="text-xs text-gray-500">Password: TechnicalSEO!</p>
         </div>
       </div>
     </div>

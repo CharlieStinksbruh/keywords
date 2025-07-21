@@ -15,7 +15,9 @@ import {
   ArrowUp,
   ArrowDown,
   Copy,
-  CheckCircle
+  CheckCircle,
+  Send,
+  X
 } from 'lucide-react';
 
 const OpportunityDashboard = () => {
@@ -27,6 +29,7 @@ const OpportunityDashboard = () => {
     platform: '',
     keyword: '',
     visited: '',
+    intent: '',
   });
 
   const [sortConfig, setSortConfig] = useState({
@@ -35,6 +38,18 @@ const OpportunityDashboard = () => {
   });
 
   const [copiedText, setCopiedText] = useState<string | null>(null);
+  const [showRedditLogin, setShowRedditLogin] = useState(false);
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [selectedOpportunity, setSelectedOpportunity] = useState(null);
+  const [commentText, setCommentText] = useState('');
+  const [isPosting, setIsPosting] = useState(false);
+  const [redditCredentials, setRedditCredentials] = useState({
+    username: '',
+    password: ''
+  });
+  const [redditAuth, setRedditAuth] = useState({
+    isAuthenticated: false
+  });
 
   const handleSort = (key: string) => {
     setSortConfig(prev => ({
@@ -54,6 +69,7 @@ const OpportunityDashboard = () => {
       if (filters.platform && opp.platform !== filters.platform) return false;
       if (filters.keyword && !opp.keyword.toLowerCase().includes(filters.keyword.toLowerCase())) return false;
       if (filters.visited && (filters.visited === 'visited') !== opp.visited) return false;
+      if (filters.intent && opp.intent !== filters.intent) return false;
       return true;
     });
 
@@ -139,6 +155,22 @@ const OpportunityDashboard = () => {
     return commentExamples[Math.floor(Math.random() * commentExamples.length)];
   };
 
+  const handleRedditLogin = () => {
+    // Simulate Reddit login
+    setRedditAuth({ isAuthenticated: true });
+    setShowRedditLogin(false);
+  };
+
+  const handlePostComment = () => {
+    setIsPosting(true);
+    // Simulate posting comment
+    setTimeout(() => {
+      setIsPosting(false);
+      setShowCommentModal(false);
+      setCommentText('');
+    }, 2000);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -201,7 +233,6 @@ const OpportunityDashboard = () => {
               <option value="">All Platforms</option>
               <option value="reddit">Reddit</option>
               <option value="quora">Quora</option>
-              <option value="stackoverflow">Stack Overflow</option>
               <option value="hackernews">Hacker News</option>
               <option value="producthunt">Product Hunt</option>
               <option value="indiehackers">Indie Hackers</option>
@@ -223,6 +254,23 @@ const OpportunityDashboard = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
+              Intent
+            </label>
+            <select
+              value={filters.intent}
+              onChange={(e) => setFilters({ ...filters, intent: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All</option>
+              <option value="question">Question</option>
+              <option value="positive">Positive</option>
+              <option value="neutral">Neutral</option>
+              <option value="negative">Negative</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Status
             </label>
             <select
@@ -235,7 +283,8 @@ const OpportunityDashboard = () => {
               <option value="unvisited">Not Visited</option>
             </select>
           </div>
-
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4 mt-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Sort By
@@ -260,7 +309,7 @@ const OpportunityDashboard = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
           <RefreshCw className="w-8 h-8 text-blue-600 animate-spin mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">Searching for Opportunities</h3>
-          <p className="text-gray-600">Analyzing search results across multiple platforms...</p>
+          <p className="text-gray-600">Analysing search results across multiple platforms...</p>
         </div>
       )}
 
@@ -318,19 +367,28 @@ const OpportunityDashboard = () => {
                               ? 'bg-orange-100 text-orange-800' 
                               : opportunity.platform === 'quora'
                               ? 'bg-red-100 text-red-800'
-                              : opportunity.platform === 'stackoverflow'
-                              ? 'bg-yellow-100 text-yellow-800'
-                              : opportunity.platform === 'hackernews'
-                              ? 'bg-gray-100 text-gray-800'
-                              : opportunity.platform === 'producthunt'
-                              ? 'bg-pink-100 text-pink-800'
-                              : 'bg-purple-100 text-purple-800'
+                              : opportunity.platform === 'facebook'
+                              ? 'bg-blue-100 text-blue-800'
+                              : opportunity.platform === 'linkedin'
+                              ? 'bg-blue-100 text-blue-800'
+                              : 'bg-gray-100 text-gray-800'
                           }`}>
                             {opportunity.platform}
                           </span>
                           <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
                             <Target className="w-3 h-3 mr-1" />
                             #{opportunity.rankingPosition}
+                          </span>
+                          <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                            opportunity.intent === 'question'
+                              ? 'bg-green-100 text-green-800'
+                              : opportunity.intent === 'positive'
+                              ? 'bg-blue-100 text-blue-800'
+                              : opportunity.intent === 'negative'
+                              ? 'bg-red-100 text-red-800'
+                              : 'bg-gray-100 text-gray-800'
+                          }`}>
+                            {opportunity.intent}
                           </span>
                           {opportunity.visited && (
                             <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
@@ -339,6 +397,7 @@ const OpportunityDashboard = () => {
                             </span>
                           )}
                         </div>
+
 
                         <h4 className="text-lg font-medium text-gray-900 mb-2">
                           {opportunity.title}
@@ -377,6 +436,17 @@ const OpportunityDashboard = () => {
                           <div className="flex items-center space-x-2 mb-2">
                             <MessageCircle className="w-4 h-4 text-yellow-600" />
                             <span className="text-sm font-medium text-yellow-900">Comment to Respond To</span>
+                            {opportunity.commentUrl && (
+                              <a
+                                href={opportunity.commentUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-yellow-600 hover:text-yellow-800 flex items-center space-x-1"
+                              >
+                                <ExternalLink className="w-3 h-3" />
+                                <span>View Comment</span>
+                              </a>
+                            )}
                           </div>
                           <p className="text-sm text-yellow-800 italic">"{highlightedComment}"</p>
                           <div className="mt-2 text-xs text-yellow-600">
@@ -411,6 +481,19 @@ const OpportunityDashboard = () => {
                       </div>
 
                       <div className="ml-6 flex flex-col space-y-2">
+                        {opportunity.platform === 'reddit' && redditAuth.isAuthenticated && (
+                          <button
+                            onClick={() => {
+                              setSelectedOpportunity(opportunity);
+                              setCommentText(anchorText);
+                              setShowCommentModal(true);
+                            }}
+                            className="inline-flex items-center px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          >
+                            <Send className="w-4 h-4 mr-2" />
+                            Reply on Reddit
+                          </button>
+                        )}
                         <button
                           onClick={() => handleVisitPost(opportunity)}
                           className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -440,6 +523,128 @@ const OpportunityDashboard = () => {
               })}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Reddit Login Modal */}
+      {showRedditLogin && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">Login to Reddit</h3>
+                <button
+                  onClick={() => setShowRedditLogin(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Reddit Username
+                  </label>
+                  <input
+                    type="text"
+                    value={redditCredentials.username}
+                    onChange={(e) => setRedditCredentials({ ...redditCredentials, username: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    placeholder="your_reddit_username"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Reddit Password
+                  </label>
+                  <input
+                    type="password"
+                    value={redditCredentials.password}
+                    onChange={(e) => setRedditCredentials({ ...redditCredentials, password: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    placeholder="your_reddit_password"
+                  />
+                </div>
+
+                <div className="flex justify-end space-x-3 pt-4">
+                  <button
+                    onClick={() => setShowRedditLogin(false)}
+                    className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleRedditLogin}
+                    className="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700"
+                  >
+                    Login
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Comment Modal */}
+      {showCommentModal && selectedOpportunity && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">Reply to Reddit Post</h3>
+                <button
+                  onClick={() => setShowCommentModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="mb-4 p-3 bg-gray-50 rounded-md">
+                <h4 className="font-medium text-gray-900 mb-2">{selectedOpportunity.title}</h4>
+                <p className="text-sm text-gray-600">{selectedOpportunity.snippet}</p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Your Comment
+                  </label>
+                  <textarea
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    rows={6}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    placeholder="Write your helpful response here..."
+                  />
+                </div>
+
+                <div className="flex justify-end space-x-3 pt-4">
+                  <button
+                    onClick={() => setShowCommentModal(false)}
+                    className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handlePostComment}
+                    disabled={isPosting || !commentText.trim()}
+                    className="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 disabled:opacity-50 flex items-center space-x-2"
+                  >
+                    {isPosting ? (
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Send className="w-4 h-4" />
+                    )}
+                    <span>{isPosting ? 'Posting...' : 'Post Comment'}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

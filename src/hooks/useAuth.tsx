@@ -22,15 +22,9 @@ export const useAuth = () => {
 const MOCK_USERS: User[] = [
   {
     id: '1',
-    email: 'admin@company.com',
-    name: 'Admin User',
+    email: 'FHM',
+    name: 'FHM',
     role: 'admin'
-  },
-  {
-    id: '2',
-    email: 'user@company.com',
-    name: 'Regular User',
-    role: 'user'
   }
 ];
 
@@ -54,7 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     const foundUser = MOCK_USERS.find(u => u.email === email);
-    if (foundUser && password === 'password') {
+    if (foundUser && password === 'TechnicalSEO!') {
       setUser(foundUser);
       localStorage.setItem('kef_user', JSON.stringify(foundUser));
       setIsLoading(false);

@@ -51,6 +51,9 @@ const Dashboard = () => {
   const platformStats = {
     reddit: opportunities.filter(opp => opp.platform === 'reddit').length,
     quora: opportunities.filter(opp => opp.platform === 'quora').length,
+    facebook: opportunities.filter(opp => opp.platform === 'facebook').length,
+    linkedin: opportunities.filter(opp => opp.platform === 'linkedin').length,
+    twitter: opportunities.filter(opp => opp.platform === 'twitter').length,
   };
 
   return (
@@ -91,6 +94,27 @@ const Dashboard = () => {
               </div>
               <span className="text-sm font-bold text-gray-900">{platformStats.quora}</span>
             </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-4 h-4 bg-purple-500 rounded"></div>
+                <span className="text-sm font-medium text-gray-700">Facebook</span>
+              </div>
+              <span className="text-sm font-bold text-gray-900">{platformStats.facebook}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-4 h-4 bg-blue-500 rounded"></div>
+                <span className="text-sm font-medium text-gray-700">LinkedIn</span>
+              </div>
+              <span className="text-sm font-bold text-gray-900">{platformStats.linkedin}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-4 h-4 bg-yellow-500 rounded"></div>
+                <span className="text-sm font-medium text-gray-700">Twitter</span>
+              </div>
+              <span className="text-sm font-bold text-gray-900">{platformStats.twitter}</span>
+            </div>
           </div>
         </div>
 
@@ -110,9 +134,6 @@ const Dashboard = () => {
               className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-200 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Export All Data
-            </button>
-            <button className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-200 transition-colors text-sm font-medium">
-              Add New Client
             </button>
           </div>
         </div>

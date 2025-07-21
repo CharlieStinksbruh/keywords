@@ -26,29 +26,43 @@ const ClientManagement = () => {
   });
   const [keywordInput, setKeywordInput] = useState('');
 
-  // Keyword suggestions based on common business needs
-  const keywordSuggestions = [
-    'SEO optimization',
-    'digital marketing',
-    'web design',
-    'content marketing',
-    'social media marketing',
-    'email marketing',
-    'PPC advertising',
-    'conversion optimization',
-    'brand strategy',
-    'online advertising',
-    'website development',
-    'e-commerce solutions',
-    'marketing automation',
-    'lead generation',
-    'customer acquisition',
-    'growth hacking',
-    'influencer marketing',
-    'video marketing',
-    'mobile marketing',
-    'analytics and tracking'
-  ];
+  // Dynamic keyword suggestions based on client context
+  const getKeywordSuggestions = (clientName: string, websiteUrl: string) => {
+    const baseKeywords = [
+      'SEO optimisation',
+      'digital marketing',
+      'web design',
+      'content marketing',
+      'social media marketing',
+      'email marketing',
+      'PPC advertising',
+      'conversion optimisation',
+      'brand strategy',
+      'online advertising',
+      'website development',
+      'e-commerce solutions',
+      'marketing automation',
+      'lead generation',
+      'customer acquisition',
+      'growth hacking',
+      'influencer marketing',
+      'video marketing',
+      'mobile marketing',
+      'analytics and tracking'
+    ];
+
+    // Add client-specific suggestions
+    const clientSpecific = [];
+    if (websiteUrl) {
+      const domain = websiteUrl.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+      clientSpecific.push(`${domain} alternative`, `${domain} review`, `${domain} vs`);
+    }
+    if (clientName) {
+      clientSpecific.push(`${clientName} service`, `${clientName} solution`, `${clientName} tool`);
+    }
+
+    return [...baseKeywords, ...clientSpecific];
+  };
 
   const isAdmin = user?.role === 'admin';
 
@@ -276,9 +290,9 @@ const ClientManagement = () => {
                   
                   {/* Keyword Suggestions */}
                   <div className="mb-3">
-                    <p className="text-xs text-gray-600 mb-2">Popular keyword suggestions:</p>
+                    <p className="text-xs text-gray-600 mb-2">Keyword suggestions for this client:</p>
                     <div className="flex flex-wrap gap-1 max-h-20 overflow-y-auto">
-                      {keywordSuggestions.map((suggestion) => (
+                      {getKeywordSuggestions(formData.name, formData.websiteUrl).map((suggestion) => (
                         <button
                           key={suggestion}
                           type="button"
